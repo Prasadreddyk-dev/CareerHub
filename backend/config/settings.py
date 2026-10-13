@@ -15,10 +15,26 @@ import os
 
 from dotenv import load_dotenv
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
+# --- AI / Gemini ---------------------------------------------------------
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+
+# Comma-separated, tried in order. Models get retired, so keep them out of code.
+GEMINI_MODELS = [
+    m.strip()
+    for m in os.environ.get("GEMINI_MODELS", "gemini-3.8-flash,gemini-3.7-flash").split(",")
+    if m.strip()
+]
+AI_TIMEOUT_SECONDS = int(os.environ.get("AI_TIMEOUT_SECONDS", "20"))           # one request
+AI_TOTAL_BUDGET_SECONDS = int(os.environ.get("AI_TOTAL_BUDGET_SECONDS", "45"))  # whole analysis
+
+
+#     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -51,6 +67,8 @@ INSTALLED_APPS = [
     'resumes',
     'jobs',
     'applications',
+    'dashboard',
+    'ai',
 ]
 
 MIDDLEWARE = [
@@ -160,6 +178,10 @@ REST_FRAMEWORK = {
     ),
 
     "PAGE_SIZE": 10,
+
+    "DEFAULT_THROTTLE_RATES": {
+    "ai_analyze": "10/min",
+},
 }
 
 AUTH_USER_MODEL = "users.User"
@@ -172,4 +194,11 @@ SIMPLE_JWT = {
 
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {"ai": {"handlers": ["console"], "level": "INFO"}},
 }
