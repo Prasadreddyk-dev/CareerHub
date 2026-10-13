@@ -24,6 +24,10 @@ load_dotenv(BASE_DIR / ".env")
 # --- AI / Gemini ---------------------------------------------------------
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
+# SECURITY WARNING: keep the secret key used in production secret!
+
+SECRET_KEY = os.environ["SECRET_KEY"]
+
 # Comma-separated, tried in order. Models get retired, so keep them out of code.
 GEMINI_MODELS = [
     m.strip()
@@ -39,8 +43,7 @@ AI_TOTAL_BUDGET_SECONDS = int(os.environ.get("AI_TOTAL_BUDGET_SECONDS", "45"))  
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-cuwd47%+1hrzlr+$8ggb+en)c+m+91p_wp4gxa-cb-3rkos+$q'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
